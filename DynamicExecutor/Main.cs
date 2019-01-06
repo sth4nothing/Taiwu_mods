@@ -198,13 +198,13 @@ namespace Sth4nothing.DynamicExecutor
                     }
                     else
                     {
-                        Logger.Log("null");
+                        Logger.Log("返回结果为: null");
                     }
                 }
             }
             catch (Exception e)
             {
-                Logger.Log($"{e.GetType().Name}: {e.Message}\n{e.StackTrace}\n{e.TargetSite}");
+                Logger.Log($"{e.GetType().FullName}: {e.Message}\n{e.StackTrace}\n{e.TargetSite}");
             }
             finally
             {
