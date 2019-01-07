@@ -2,7 +2,7 @@
     "Id": "Gadgets",
     "DisplayName": "小玩意",
     "Author": "sth4nothing",
-    "Version": "1.0.0",
+    "Version": "1.0.1",
     "AssemblyName": "Gadgets.dll",
     "EntryMethod": "Sth4nothing.Gadgets.Main.Load",
     "Requirements": ["TaiwuUtils"]

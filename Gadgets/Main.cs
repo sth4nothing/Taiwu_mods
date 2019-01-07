@@ -9,14 +9,12 @@ namespace Sth4nothing.Gadgets
     {
         public override void Save(UnityModManager.ModEntry modEntry) => Save(this, modEntry);
 
-        public bool costTime = false;
+        public bool costTime = true;
+        public int itemId = 100101;
+        public int count = 1;
     }
     public class Main
     {
-        private static int itemId = 530401;
-
-        public static int count = 9;
-
         public static UnityModManager.ModEntry.ModLogger Logger { get; private set; }
 
         public static bool Enabled { get; private set; }
@@ -46,24 +44,24 @@ namespace Sth4nothing.Gadgets
                 return;
             GUILayout.BeginHorizontal("box");
             GUILayout.Label("物品id");
-            if (int.TryParse(GUILayout.TextField(Main.itemId.ToString()), out int item))
+            if (int.TryParse(GUILayout.TextField(Settings.itemId.ToString()), out int item))
             {
                 if (item > 0)
-                    itemId = item;
+                    Settings.itemId = item;
             }
             GUILayout.Label("数目");
-            if (int.TryParse(GUILayout.TextField(Main.count.ToString()), out int cnt))
+            if (int.TryParse(GUILayout.TextField(Settings.count.ToString()), out int cnt))
             {
                 if (cnt > 0)
-                    count = cnt;
+                    Settings.count = cnt;
             }
             if (DateFile.instance.actorItemsDate != null
                 && DateFile.instance.actorItemsDate.ContainsKey(DateFile.instance.mianActorId)
                 && GUILayout.Button("制造"))
             {
-                for (int i = 0; i < count; i++)
+                for (int i = 0; i < Settings.count; i++)
                 {
-                    var newItemId = DateFile.instance.MakeNewItem(itemId, 0, 10, 50, 20);
+                    var newItemId = DateFile.instance.MakeNewItem(Settings.itemId, 0, 10, 50, 20);
                     DateFile.instance.actorItemsDate[DateFile.instance.mianActorId].Add(newItemId, 1);
                 }
             }

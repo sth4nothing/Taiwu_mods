@@ -26,6 +26,8 @@ namespace Sth4nothing.Gadgets
     {
         static void Prefix(MainMenu __instance)
         {
+            if (!Main.Enabled)
+                return;
             Reflection.SetField(__instance, "showStartMassage", false);
         }
     }
