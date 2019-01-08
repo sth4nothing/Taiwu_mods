@@ -10,12 +10,12 @@ namespace Sth4nothing.Gadgets
     /// <summary>
     /// 移动时不消耗时间
     /// </summary>
-    [HarmonyPatch(typeof(WorldMapSystem), "MoveToChoosePlace")]
-    public class WorldMapSystem_MoveToChoosePlace_Patch
+    [HarmonyPatch(typeof(WorldMapSystem), "ChangeMoveNeed")]
+    public class WorldMapSystem_ChangeMoveNeed_Patch
     {
-        private static void Prefix(ref bool needTime)
+        private static void Prefix(ref bool noNeed)
         {
-            needTime = Main.Enabled ? Main.Settings.costTime : needTime;
+            noNeed = Main.Enabled ? !Main.Settings.costTime : noNeed;
         }
     }
     /// <summary>
@@ -40,25 +40,51 @@ namespace Sth4nothing.Gadgets
         static bool Prefix(DropObject __instance, UnityEngine.EventSystems.PointerEventData eventData)
         {
             if (!Main.Enabled
-                || __instance.dropObjectTyp != 10
                 || (!Input.GetKey(KeyCode.LeftControl) && !Input.GetKey(KeyCode.RightControl))
                 || ActorMenu.instance.isEnemy
                 )
                 return true;
-            if (__instance.containerImage != null)
+            if (__instance.containerImage != null || BattleSystem.instance.battleWindow.activeSelf)
             {
-                var type = typeof(DropObject);
-                __instance.containerImage.color = (Color)Reflection.GetField(__instance, "normalColor");
-                var des = Reflection.Invoke(__instance, "GetDropDes", eventData) as List<Image>;
-                if (des != null && des.Contains(__instance.dropDesImage) && !BattleSystem.instance.battleWindow.activeSelf)
-                {
-                    int itemId = int.Parse(eventData.pointerDrag.gameObject.name.Split(',')[1]);
-                    int actorId = ActorMenu.instance.acotrId;
+                return false;
+            }
+            var des = Reflection.Invoke(__instance, "GetDropDes", eventData) as List<Image>;
+            if (des != null || des.Contains(__instance.dropDesImage))
+            {
+                return false;
+            }
+            __instance.containerImage.color = (Color)Reflection.GetField(__instance, "normalColor");
+            int itemId = int.Parse(eventData.pointerDrag.gameObject.name.Split(',')[1]);
+            int actorId = ActorMenu.instance.acotrId;
+            switch (__instance.dropObjectTyp)
+            {
+                case 3:
+                    if (int.Parse(DateFile.instance.GetItemDate(itemId, 2012, false)) <= 0)
+                    {
+                        return true;
+                    }
+                    foreach (var item in DateFile.instance.actorItemsDate[actorId].Keys)
+                    {
+                        if (DateFile.instance.itemsDate.ContainsKey(item)
+                            && int.Parse(DateFile.instance.GetItemDate(item, 2012, false)) > 0)
+                        {
+                            int xuelu = int.Parse(DateFile.instance.GetItemDate(item, 2012, false));
+                            int count = DateFile.instance.actorItemsDate[actorId][item];
+                            DateFile.instance.actorsDate[actorId][706] = (
+                                int.Parse(DateFile.instance.GetActorDate(actorId, 706, false))
+                                + count * xuelu
+                            ).ToString();
+                            DateFile.instance.LoseItem(actorId, item, count, true);
+                        }
+                    }
+                    break;
 
-                    int typ = int.Parse(DateFile.instance.GetItemDate(itemId, 44)) - 1;
+                case 10:
+
+                    int resTyp = int.Parse(DateFile.instance.GetItemDate(itemId, 44)) - 1;
 
                     int maxRes = UIDate.instance.GetMaxResource() + 1000;
-                    int curRes = int.Parse(DateFile.instance.actorsDate[actorId][401 + typ]);
+                    int curRes = int.Parse(DateFile.instance.actorsDate[actorId][401 + resTyp]);
                     int cnt = DateFile.instance.actorItemsDate[actorId][itemId];
 
                     int val = int.Parse(DateFile.instance.GetItemDate(itemId, 55));
@@ -70,14 +96,18 @@ namespace Sth4nothing.Gadgets
                         num++;
                     }
 
-                    UIDate.instance.ChangeResource(ActorMenu.instance.acotrId, typ, res - curRes, canShow: false);
+                    UIDate.instance.ChangeResource(ActorMenu.instance.acotrId, resTyp, res - curRes, canShow: false);
                     DateFile.instance.LoseItem(ActorMenu.instance.acotrId, itemId, num, removeItem: true);
+                    break;
 
-                    DateFile.instance.PlayeSE(8);
-                    WindowManage.instance.WindowSwitch(false);
-                    DropUpdate.instance.updateId = __instance.dropObjectTyp;
-                }
+                default:
+                    return true;
             }
+
+            DateFile.instance.PlayeSE(8);
+            WindowManage.instance.WindowSwitch(false);
+            DropUpdate.instance.updateId = __instance.dropObjectTyp;
+
             return false;
         }
     }
