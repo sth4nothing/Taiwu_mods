@@ -156,7 +156,7 @@ namespace Sth4nothing.DynamicExecutor
                 var reg = new Regex(@"\bExecute\b");
                 var cs = File.ReadAllText(Path.Combine(rootPath, "Execute.cs.template"));
                 File.WriteAllText(Path.Combine(rootPath, "Execute.cs"),
-                    reg.Replace(cs, "Execute" + count));
+                    reg.Replace(cs, $"Execute{count}"));
                 // Execute.csproj
                 var csproj = File.ReadAllText(Path.Combine(rootPath, "Execute.csproj.template"));
                 File.WriteAllText(Path.Combine(rootPath, "Execute.csproj"),
@@ -188,10 +188,11 @@ namespace Sth4nothing.DynamicExecutor
                 {
                     // 使用反射调用代码入口Sth4nothing.Execute.Main
                     var ass = Assembly.LoadFile(Path.Combine(rootPath, $"Execute{count}.dll"));
-                    var execute = ass.CreateInstance("Sth4nothing.Execute" + count);
-                    var method = execute.GetType().GetMethod("Main",
+                    var typ = ass.GetType($"Sth4nothing.Execute{count}");
+                    var method = typ.GetMethod("Main",
                         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
-                    var ans = method.Invoke(execute, null);
+                    Logger.Log("执行方法: " + method.ToString());
+                    var ans = method.Invoke(null, null);
                     if (ans != null)
                     {
                         Logger.Log($"返回类型: {ans.GetType()}\n返回结果: {ans}");
