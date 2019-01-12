@@ -12,7 +12,7 @@ namespace TaiwuUtils
     [XmlRoot("dictionary")]
     public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, IXmlSerializable
     {
-        public HashSet<TKey> IgnoreKeys { get; set; }
+        public HashSet<TKey> IgnoreKeys { get; } = new HashSet<TKey>();
         public System.Xml.Schema.XmlSchema GetSchema()
         {
             return null;
