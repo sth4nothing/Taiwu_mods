@@ -5,7 +5,7 @@ using UnityModManagerNet;
 
 namespace Sth4nothing.Gadgets
 {
-    public class ModSettings : UnityModManager.ModSettings
+    public class Settings : UnityModManager.ModSettings
     {
         public override void Save(UnityModManager.ModEntry modEntry) => Save(this, modEntry);
 
@@ -19,12 +19,12 @@ namespace Sth4nothing.Gadgets
 
         public static bool Enabled { get; private set; }
 
-        public static ModSettings Settings { get; private set; }
+        public static Settings Settings { get; private set; }
 
         public static bool Load(UnityModManager.ModEntry modEntry)
         {
             Logger = modEntry.Logger;
-            Settings = ModSettings.Load<ModSettings>(modEntry);
+            Settings = Settings.Load<Settings>(modEntry);
             modEntry.OnToggle = OnToggle;
             modEntry.OnGUI = OnGUI;
             modEntry.OnSaveGUI = OnSaveGUI;
