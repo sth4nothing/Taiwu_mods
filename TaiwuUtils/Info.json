@@ -2,7 +2,7 @@
     "Id": "TaiwuUtils",
     "DisplayName": "Taiwu Utilities",
     "Author": "sth4nothing",
-    "Version": "0.1.0",
+    "Version": "0.2.0",
     "AssemblyName": "TaiwuUtils.dll",
     "EntryMethod": "TaiwuUtils.Main.Load"
 }
