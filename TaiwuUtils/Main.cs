@@ -25,6 +25,7 @@ namespace TaiwuUtils
         {
             Logger = modEntry.Logger;
             modEntry.OnToggle = OnToggle;
+            SevenZip.Helper.SevenZipPath = System.IO.Path.Combine(modEntry.Path, "7z.exe");
             return true;
         }
     }
