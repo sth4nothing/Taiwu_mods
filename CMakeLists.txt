@@ -172,7 +172,7 @@ MACRO(CREATEMOD moddir)
 		System.Data
 		System.Xml
 		System.Runtime.Serialization
-		${STEAMDIR}${DLLPATH}/Assembly-CSharp.dll
+		${STEAMDIR}${DLLPATH}Assembly-CSharp.dll
 		${STEAMDIR}${DLLPATH}0Harmony12.dll
 		${STEAMDIR}${DLLPATH}Newtonsoft.Json.dll
 		${STEAMDIR}${DLLPATH}UnityEngine.dll
@@ -183,6 +183,7 @@ MACRO(CREATEMOD moddir)
 		${STEAMDIR}${DLLPATH}UnityEngine.UI.dll
 		${STEAMDIR}${DLLPATH}UnityEngine.UIElementsModule.dll
 		${STEAMDIR}${DLLPATH}UnityEngine.UIModule.dll
+		${STEAMDIR}${DLLPATH}DOTween.dll
 		${dlldepends}
     )
 
@@ -200,7 +201,7 @@ IF(WIN32)
 
 
 #下载编译用dlls zip包
-set(DLLPACK_VERSION "190118")
+set(DLLPACK_VERSION "190213")
 set(DLLPACK_NAME "dlls")
 set(DLLPACK_DIR "${CMAKE_CURRENT_BINARY_DIR}\\${DLLPACK_NAME}")
 set(DLLPACK_URL "https://github.com/phorcys/Taiwu_mods/releases/download/dll${DLLPACK_VERSION}/dlls-${DLLPACK_VERSION}.zip")
@@ -324,8 +325,8 @@ using System.Runtime.Versioning\;
 		${FILELIST}
 		${moddir}/Info.json
 		)
-	#项目版本 .net 3.5
-	set_property(TARGET ${moddir} PROPERTY VS_DOTNET_TARGET_FRAMEWORK_VERSION "v3.5")
+	#项目版本 .net 4.6
+	set_property(TARGET ${moddir} PROPERTY VS_DOTNET_TARGET_FRAMEWORK_VERSION "v4.6")
 	#项目基础引用
 	set_property(TARGET ${moddir} PROPERTY VS_DOTNET_REFERENCES
 		"System"
@@ -354,6 +355,7 @@ using System.Runtime.Versioning\;
 	set_property(TARGET ${moddir} PROPERTY VS_DOTNET_REFERENCE_UnityEngine.UI "${DLLPACK_DIR}\\UnityEngine.UI.dll")
 	set_property(TARGET ${moddir} PROPERTY VS_DOTNET_REFERENCE_UnityEngine.UIElementsModule "${DLLPACK_DIR}\\UnityEngine.UIElementsModule.dll")
 	set_property(TARGET ${moddir} PROPERTY VS_DOTNET_REFERENCE_UnityEngine.UIModule "${DLLPACK_DIR}\\UnityEngine.UIModule.dll")
+	set_property(TARGET ${moddir} PROPERTY VS_DOTNET_REFERENCE_DOTween "${DLLPACK_DIR}\\DOTween.dll")
 	
 	#遍历mod目录下dll，加入引用
 	FILE(GLOB_RECURSE MODDLLFILES ${moddir}/*.dll)
